@@ -307,10 +307,9 @@ and never change. `Title` is already there, already indexable, and clean.
   stageview. There is no card-level width in the schema at any version, so this is not a
   thing a version bump fixes. Practically the summary holds about 70 characters before it
   wraps to a second line - still far short of the eight the full card occupies.
-- **The card declares `version: 1.4`, which nobody chose.** It has been there since the
-  first commit. Teams itself renders up to 1.6, but 1.6 is reported broken for Teams cards
-  sent through Power Automate, so 1.5 is the only bump worth trying and it needs testing
-  against the connector rather than against the Teams docs.
+- **The card declares `version: 1.4`** Teams itself renders up to 1.6, but 1.6 is reported
+  broken for Teams cards sent through Power Automate, so 1.5 is the only bump worth trying
+  and it needs testing against the connector rather than against the Teams docs.
 - **The webhook URL is the credential.** GitHub signs requests with HMAC-SHA256 in
   `X-Hub-Signature-256`, and Power Automate has no HMAC function, so the signature can't
   be verified. The SAS signature in the flow URL is the de facto shared secret. Treat it
