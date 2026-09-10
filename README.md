@@ -106,7 +106,7 @@ view filtered to `DisplayName is empty` becomes the fill-in-the-blanks backlog.
 Unmapped or blank falls back to the bare login, so the card is never wrong, only less
 informative.
 
-### 3. Main flow
+### 3. Main flow (in Power Automate)
 
 | Step | Action | Config |
 |---|---|---|
