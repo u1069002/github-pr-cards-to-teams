@@ -1,0 +1,1 @@
+Title eq '@{concat(body('Parse_JSON')?['repository']?['full_name'], '#', string(body('Parse_JSON')?['number']))}'

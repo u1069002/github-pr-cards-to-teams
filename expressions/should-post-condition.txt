@@ -1,0 +1,1 @@
+if(and(contains(createArray('opened','ready_for_review','reopened'), body('Parse_JSON')?['action']), not(equals(body('Parse_JSON')?['pull_request']?['draft'], true))), 'yes', 'no')

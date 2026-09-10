@@ -1,0 +1,154 @@
+{
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "Container",
+      "spacing": "None",
+      "isVisible": @{if(equals(body('Parse_JSON')?['action'], 'closed'), 'false', 'true')},
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "@{if(equals(body('Parse_JSON')?['action'], 'closed'), if(equals(body('Parse_JSON')?['pull_request']?['merged'], true), 'Merged', 'Closed'), if(equals(body('Parse_JSON')?['action'], 'opened'), 'New pull request', if(equals(body('Parse_JSON')?['action'], 'ready_for_review'), 'Ready for review', if(equals(body('Parse_JSON')?['action'], 'reopened'), 'Reopened', if(equals(body('Parse_JSON')?['action'], 'converted_to_draft'), 'Back to draft', 'Updated')))))}  ·  @{body('Parse_JSON')?['repository']?['full_name']} #@{body('Parse_JSON')?['number']}",
+          "weight": "Bolder",
+          "size": "Small",
+          "color": "@{if(equals(body('Parse_JSON')?['action'], 'closed'), if(equals(body('Parse_JSON')?['pull_request']?['merged'], true), 'Good', 'Attention'), if(equals(body('Parse_JSON')?['action'], 'converted_to_draft'), 'Warning', 'Accent'))}",
+          "spacing": "None",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "text": @{slice(string(array(body('Parse_JSON')?['pull_request']?['title'])), 1, -1)},
+          "weight": "Bolder",
+          "size": "Medium",
+          "wrap": true,
+          "spacing": "Small"
+        },
+        {
+          "type": "ColumnSet",
+          "spacing": "Medium",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "@{coalesce(body('Parse_JSON')?['pull_request']?['user']?['avatar_url'], 'https://github.githubassets.com/images/modules/logos_page/Octocat.png')}",
+                  "size": "Small",
+                  "style": "Person",
+                  "altText": "@{body('Parse_JSON')?['pull_request']?['user']?['login']}"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "verticalContentAlignment": "Center",
+              "spacing": "Small",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": @{slice(string(array(if(empty(coalesce(first(body('Get_user')?['value'])?['DisplayName'], '')), body('Parse_JSON')?['pull_request']?['user']?['login'], concat(first(body('Get_user')?['value'])?['DisplayName'], ' (', body('Parse_JSON')?['pull_request']?['user']?['login'], ')')))), 1, -1)},
+                  "weight": "Bolder",
+                  "size": "Small",
+                  "spacing": "None",
+                  "wrap": true
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "@{body('Parse_JSON')?['pull_request']?['head']?['ref']} → @{body('Parse_JSON')?['pull_request']?['base']?['ref']}",
+                  "isSubtle": true,
+                  "size": "Small",
+                  "spacing": "None",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "ColumnSet",
+          "spacing": "Medium",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "+@{coalesce(body('Parse_JSON')?['pull_request']?['additions'], 0)}",
+                  "color": "Good",
+                  "weight": "Bolder",
+                  "size": "Small",
+                  "spacing": "None"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "spacing": "Small",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "-@{coalesce(body('Parse_JSON')?['pull_request']?['deletions'], 0)}",
+                  "color": "Attention",
+                  "weight": "Bolder",
+                  "size": "Small",
+                  "spacing": "None"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "spacing": "Medium",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "@{coalesce(body('Parse_JSON')?['pull_request']?['changed_files'], 0)} files  ·  @{coalesce(body('Parse_JSON')?['pull_request']?['commits'], 0)} commits",
+                  "isSubtle": true,
+                  "size": "Small",
+                  "spacing": "None",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "TextBlock",
+          "text": "Opened {{DATE(@{body('Parse_JSON')?['pull_request']?['created_at']}, SHORT)}} at {{TIME(@{body('Parse_JSON')?['pull_request']?['created_at']})}}",
+          "isSubtle": true,
+          "size": "Small",
+          "spacing": "Medium",
+          "wrap": true
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": @{slice(string(array(concat(if(equals(body('Parse_JSON')?['pull_request']?['merged'], true), 'Merged', 'Closed'), '  ·  #', body('Parse_JSON')?['number'], '  —  ', body('Parse_JSON')?['pull_request']?['title']))), 1, -1)},
+      "color": "@{if(equals(body('Parse_JSON')?['pull_request']?['merged'], true), 'Good', 'Attention')}",
+      "weight": "Bolder",
+      "size": "Small",
+      "spacing": "None",
+      "isVisible": @{if(equals(body('Parse_JSON')?['action'], 'closed'), 'true', 'false')},
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "View pull request",
+      "url": "@{body('Parse_JSON')?['pull_request']?['html_url']}"
+    },
+    {
+      "type": "Action.OpenUrl",
+      "title": "Files changed",
+      "url": "@{body('Parse_JSON')?['pull_request']?['html_url']}/files"
+    }
+  ]
+}

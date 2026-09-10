@@ -1,0 +1,1 @@
+@and(contains(createArray('opened','ready_for_review','converted_to_draft','synchronize','edited','closed','reopened'), triggerBody()?['action']), not(and(equals(triggerBody()?['action'], 'synchronize'), equals(triggerBody()?['pull_request']?['draft'], true))))

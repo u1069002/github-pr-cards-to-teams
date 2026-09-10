@@ -1,0 +1,1 @@
+slice(string(array(if(empty(coalesce(first(body('Get_user')?['value'])?['DisplayName'], '')), body('Parse_JSON')?['pull_request']?['user']?['login'], concat(first(body('Get_user')?['value'])?['DisplayName'], ' (', body('Parse_JSON')?['pull_request']?['user']?['login'], ')')))), 1, -1)
